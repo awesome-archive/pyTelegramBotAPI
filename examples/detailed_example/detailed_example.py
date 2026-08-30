@@ -2,9 +2,10 @@
 This is a detailed example using almost every command of the API
 """
 
+import time
+
 import telebot
 from telebot import types
-import time
 
 TOKEN = '<token_string>'
 
@@ -12,14 +13,14 @@ knownUsers = []  # todo: save these in a file,
 userStep = {}  # so they won't reset every time the bot restarts
 
 commands = {  # command description used in the "help" command
-              'start': 'Get used to the bot',
-              'help': 'Gives you information about the available commands',
-              'sendLongText': 'A test using the \'send_chat_action\' command',
-              'getImage': 'A test using multi-stage messages, custom keyboard, and media sending'
+    'start'       : 'Get used to the bot',
+    'help'        : 'Gives you information about the available commands',
+    'sendLongText': 'A test using the \'send_chat_action\' command',
+    'getImage'    : 'A test using multi-stage messages, custom keyboard, and media sending'
 }
 
 imageSelect = types.ReplyKeyboardMarkup(one_time_keyboard=True)  # create the image selection keyboard
-imageSelect.add('cock', 'pussy')
+imageSelect.add('Mickey', 'Minnie')
 
 hideBoard = types.ReplyKeyboardRemove()  # if sent as reply_markup, will hide the keyboard
 
@@ -33,7 +34,7 @@ def get_user_step(uid):
     else:
         knownUsers.append(uid)
         userStep[uid] = 0
-        print "New user detected, who hasn't used \"/start\" yet"
+        print("New user detected, who hasn't used \"/start\" yet")
         return 0
 
 
@@ -45,7 +46,7 @@ def listener(messages):
     for m in messages:
         if m.content_type == 'text':
             # print the sent message to the console
-            print str(m.chat.first_name) + " [" + str(m.chat.id) + "]: " + m.text
+            print(str(m.chat.first_name) + " [" + str(m.chat.id) + "]: " + m.text)
 
 
 bot = telebot.TeleBot(TOKEN)
@@ -104,15 +105,15 @@ def msg_image_select(m):
     # for some reason the 'upload_photo' status isn't quite working (doesn't show at all)
     bot.send_chat_action(cid, 'typing')
 
-    if text == "cock":  # send the appropriate image based on the reply to the "/getImage" command
+    if text == 'Mickey':  # send the appropriate image based on the reply to the "/getImage" command
         bot.send_photo(cid, open('rooster.jpg', 'rb'),
                        reply_markup=hideBoard)  # send file and hide keyboard, after image is sent
         userStep[cid] = 0  # reset the users step back to 0
-    elif text == "pussy":
+    elif text == 'Minnie':
         bot.send_photo(cid, open('kitten.jpg', 'rb'), reply_markup=hideBoard)
         userStep[cid] = 0
     else:
-        bot.send_message(cid, "Don't type bullsh*t, if I give you a predefined keyboard!")
+        bot.send_message(cid, "Please, use the predefined keyboard!")
         bot.send_message(cid, "Please try again")
 
 
@@ -128,4 +129,5 @@ def command_default(m):
     # this is the standard reply to a normal message
     bot.send_message(m.chat.id, "I don't understand \"" + m.text + "\"\nMaybe try the help page at /help")
 
-bot.polling()
+
+bot.infinity_polling()

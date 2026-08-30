@@ -1,8 +1,9 @@
-# This example show how to write an inline mode telegramt bot use pyTelegramBotAPI.
-import telebot
-import time
-import sys
+# This example show how to write an inline mode telegram bot use pyTelegramBotAPI.
 import logging
+import sys
+import time
+
+import telebot
 from telebot import types
 
 API_TOKEN = '<TOKEN>'
@@ -41,7 +42,7 @@ def query_video(inline_query):
     try:
         r = types.InlineQueryResultVideo('1',
                                          'https://github.com/eternnoir/pyTelegramBotAPI/blob/master/tests/test_data/test_video.mp4?raw=true',
-                                         'video/mp4', 'Video',
+                                         'video/mp4', 
                                          'https://raw.githubusercontent.com/eternnoir/pyTelegramBotAPI/master/examples/detailed_example/rooster.jpg',
                                          'Title'
                                          )
@@ -50,7 +51,7 @@ def query_video(inline_query):
         print(e)
 
 
-@bot.inline_handler(lambda query: len(query.query) is 0)
+@bot.inline_handler(lambda query: len(query.query) == 0)
 def default_query(inline_query):
     try:
         r = types.InlineQueryResultArticle('1', 'default', types.InputTextMessageContent('default'))
@@ -60,7 +61,7 @@ def default_query(inline_query):
 
 
 def main_loop():
-    bot.polling(True)
+    bot.infinity_polling()
     while 1:
         time.sleep(3)
 
@@ -69,5 +70,5 @@ if __name__ == '__main__':
     try:
         main_loop()
     except KeyboardInterrupt:
-        print >> sys.stderr, '\nExiting by user request.\n'
+        print('\nExiting by user request.\n')
         sys.exit(0)
